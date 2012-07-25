@@ -20,8 +20,6 @@ module Yahoo
           add_datetime_to_quotes
         end
 
-        private
-
         def get_quotes_as_array 
           quote_data = parse_query_json['results']['quote']
           quote_data = [quote_data] unless quote_data.class == Array                
@@ -37,6 +35,9 @@ module Yahoo
         def parse_query_json
           JSON.parse(@response.body)['query']
         end
+
+        private :get_quotes_as_array, :add_datetime_to_quotes
+
       end
 
     end
