@@ -14,6 +14,10 @@ module Yahoo
 
         def count
           parse_query_json['count']    
+        end      
+        
+        def number_of_quotes
+          count
         end
 
         def quotes                                               

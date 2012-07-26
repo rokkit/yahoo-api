@@ -1,25 +1,17 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Yahoo::Api::Finance::Query do 
+describe Yahoo::Api::Finance::Query do
+  
+  let(:requested_data) { ['quoted_at', 'symbol', 'Ask', 'Bid'] }
+  
   shared_examples "successful queries" do |tickers|
+    
     subject { Yahoo::Api::Finance::Query.new(tickers) }
     
-    it "creates a new Yahoo API query" do
-      subject.should be_true
-    end
-
-    it "returns a HTTP success response" do
-      subject.response.should be_kind_of Net::HTTPSuccess
-    end
-
-    it "reports #{tickers.size} results" do
-      subject.count.should == tickers.size
-    end
-
-    it "returns an array of #{tickers.size} quotes" do
-      subject.quotes.should be_instance_of Array
-      subject.quotes.size.should == tickers.size
-    end
+    its(:response) { should be_kind_of Net::HTTPSuccess }
+    its(:count) { should == tickers.size }
+    its(:quotes) { should be_instance_of Array }
+    its(:number_of_quotes) { should == tickers.size }
 
     it "wraps each quote in a Hash" do
       subject.quotes.each do |quote|
@@ -29,19 +21,17 @@ describe Yahoo::Api::Finance::Query do
 
     it "each quote contain the requested data" do
       subject.quotes.each do |quote|
-        quote.has_key?('quoted_at').should be_true
-        quote.has_key?('symbol').should be_true
-        quote.has_key?('Ask').should be_true
-        quote.has_key?('Bid').should be_true        
+        requested_data.each do |data|
+          quote.has_key?(data).should be_true          
+        end
       end
     end        
 
     it "none of the requested data is empty" do
-      subject.quotes.each do |quote|
-        quote['quoted_at'].should_not == ""
-        quote['symbol'].should_not == ""
-        quote['Ask'].should_not == ""
-        quote['Bid'].should_not == ""        
+      subject.quotes.each do |quote|                         
+        requested_data.each do |data|
+          quote[data].should_not == ""        
+        end
       end
     end        
   end
@@ -64,9 +54,11 @@ describe Yahoo::Api::Finance::Query do
       subject.quotes.last['symbol'].should == 'BLT.L'
     end    
   end
+  
 end
 
 describe "Integration between the Query and URL" do
+
   context "of a query with no assets" do
     it "raises an exception with no ticker array" do
       expect {Yahoo::Api::Finance::Query.new()}.
@@ -77,5 +69,6 @@ describe "Integration between the Query and URL" do
       expect {Yahoo::Api::Finance::Query.new([])}. 
         to raise_error(ArgumentError, "At least one ticker must be supplied")
     end
-  end      
+  end
+        
 end
