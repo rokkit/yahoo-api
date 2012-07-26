@@ -16,9 +16,7 @@ module Yahoo
           parse_query_json['count']    
         end      
         
-        def number_of_quotes
-          count
-        end
+        alias :number_of_quotes :count
 
         def quotes                                               
           add_datetime_to_quotes
