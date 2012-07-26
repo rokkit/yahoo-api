@@ -13,7 +13,7 @@ module Yahoo
         end  
 
         def count
-          parse_query_json['count']    
+          parse_response_json['count']    
         end      
         
         alias :number_of_quotes :count
@@ -22,23 +22,25 @@ module Yahoo
           add_datetime_to_quotes
         end
 
+        def parse_response_json
+          JSON.parse(@response.body)['query']
+        end
+
         def get_quotes_as_array 
-          quote_data = parse_query_json['results']['quote']
+          quote_data = parse_response_json['results']['quote']
           quote_data = [quote_data] unless quote_data.class == Array                
           quote_data
         end     
   
         def add_datetime_to_quotes
           get_quotes_as_array.each do |quote|
-            quote['quoted_at']= parse_query_json['created']
+            quote['quoted_at']= parse_response_json['created']
           end              
-        end 
-  
-        def parse_query_json
-          JSON.parse(@response.body)['query']
         end
-
-        private :get_quotes_as_array, :add_datetime_to_quotes
+          
+        private :get_quotes_as_array, 
+                :add_datetime_to_quotes, 
+                :parse_response_json
 
       end
 

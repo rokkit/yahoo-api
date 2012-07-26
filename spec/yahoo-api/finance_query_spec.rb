@@ -55,19 +55,34 @@ describe Yahoo::Api::Finance::Query do
     end    
   end
   
-end
-
-describe "Integration between the Query and URL" do
-
-  context "of a query with no assets" do
-    it "raises an exception with no ticker array" do
+  context "of a query with no defined assets" do
+    it "raises an exception with argument" do
       expect {Yahoo::Api::Finance::Query.new()}.
         to raise_error(ArgumentError, "wrong number of arguments (0 for 1)")
+    end
+
+    it "raises an exception with an asset outside an array" do
+      expect {Yahoo::Api::Finance::Query.new("BP.L")}.
+        to raise_error(ArgumentError, "Tickers must be supplied in an Array")
     end
 
     it "raises an exception with an empty ticker array" do
       expect {Yahoo::Api::Finance::Query.new([])}. 
         to raise_error(ArgumentError, "At least one ticker must be supplied")
+    end
+  end
+
+  context "of a query with erroneous tickers" do
+    use_vcr_cassette "error_stock_query", :record => :new_episodes
+    subject { Yahoo::Api::Finance::Query.new(["BP"]) }
+    
+    it "returns a set of quotes" do
+      subject.count.should == 1
+    end
+
+    it "the quote prices have null values" do
+      subject.quotes.first['Ask'].should be_nil
+      subject.quotes.first['Bid'].should be_nil
     end
   end
         
