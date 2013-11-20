@@ -10,9 +10,9 @@ module Yahoo
         
         class <<self                 
 
-          def build(tickers)
+          def build(tickers, fields)
             validate_tickers(tickers)
-            URI(build_query_uri(tickers))
+            URI(build_query_uri(tickers, fields))
           end        
 
           private  
@@ -25,8 +25,8 @@ module Yahoo
             end        
           end
   
-          def build_query_uri(tickers)
-            base_query =  API_QUERY_URL + select_data_from + FINANCE_DATABASE + 
+          def build_query_uri(tickers, fields)
+            base_query =  API_QUERY_URL + select_data_from(fields) + FINANCE_DATABASE + 
                 for_these_symbols(tickers)
             query = URI.encode(base_query) + "&format=json" + DATATABLE
           end     
@@ -35,8 +35,9 @@ module Yahoo
             " where symbol in (\"#{tickers.join("\", \"")}\")"    
           end
   
-          def select_data_from
-            "select symbol, Ask, Bid from "        
+          def select_data_from(fields)
+            fields = fields.empty? ? "*" : fields.join(', ')
+            "select #{fields} from "     
           end 
 
         end

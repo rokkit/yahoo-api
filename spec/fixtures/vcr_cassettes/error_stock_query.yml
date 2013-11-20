@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - ! '*/*'
+      - '*/*'
       User-Agent:
       - Ruby
   response:
@@ -19,7 +19,7 @@ http_interactions:
       X-Yql-Host:
       - engine3.yql.bf1.yahoo.com
       Access-Control-Allow-Origin:
-      - ! '*'
+      - '*'
       Cache-Control:
       - no-cache
       Content-Type:
@@ -38,7 +38,7 @@ http_interactions:
       - keep-alive
     body:
       encoding: US-ASCII
-      string: ! '{"query":{"count":1,"created":"2012-07-26T12:28:46Z","lang":"en-US","results":{"quote":{"symbol":"BP","Bid":null,"Ask":null}}}}'
+      string: '{"query":{"count":1,"created":"2012-07-26T12:28:46Z","lang":"en-US","results":{"quote":{"symbol":"BP","Bid":null,"Ask":null}}}}'
     http_version: 
   recorded_at: Thu, 26 Jul 2012 12:28:46 GMT
 - request:
@@ -49,7 +49,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - ! '*/*'
+      - '*/*'
       User-Agent:
       - Ruby
   response:
@@ -60,7 +60,7 @@ http_interactions:
       X-Yql-Host:
       - engine9.yql.ac4.yahoo.com
       Access-Control-Allow-Origin:
-      - ! '*'
+      - '*'
       Cache-Control:
       - no-cache
       Content-Type:
@@ -79,7 +79,92 @@ http_interactions:
       - keep-alive
     body:
       encoding: US-ASCII
-      string: ! '{"query":{"count":1,"created":"2012-07-26T12:36:00Z","lang":"en-US","results":{"quote":{"symbol":".L","Bid":null,"Ask":null}}}}'
+      string: '{"query":{"count":1,"created":"2012-07-26T12:36:00Z","lang":"en-US","results":{"quote":{"symbol":".L","Bid":null,"Ask":null}}}}'
     http_version: 
   recorded_at: Thu, 26 Jul 2012 12:36:00 GMT
-recorded_with: VCR 2.2.4
+- request:
+    method: get
+    uri: http://query.yahooapis.com/v1/public/yql?env=store://datatables.org/alltableswithkeys&format=json&q=select%20%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22BP%22)
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+      Host:
+      - query.yahooapis.com
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      X-Yql-Host:
+      - engine9.yql.bf1.yahoo.com
+      Access-Control-Allow-Origin:
+      - '*'
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Wed, 20 Nov 2013 09:43:39 GMT
+      Server:
+      - YTS/1.20.13
+      Age:
+      - '0'
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: '{"error":{"lang":"en-US","description":"Query syntax error(s) [line
+        1:13 expecting field got ''yahoo'']"}}'
+    http_version: 
+  recorded_at: Wed, 20 Nov 2013 09:43:40 GMT
+- request:
+    method: get
+    uri: http://query.yahooapis.com/v1/public/yql?env=store://datatables.org/alltableswithkeys&format=json&q=select%20Ask,%20Bid%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22BP%22)
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+      Host:
+      - query.yahooapis.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Yql-Host:
+      - engine7.yql.bf1.yahoo.com
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Wed, 20 Nov 2013 09:44:29 GMT
+      Server:
+      - YTS/1.20.13
+      Age:
+      - '0'
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: '{"query":{"count":1,"created":"2013-11-20T09:44:29Z","lang":"en-US","results":{"quote":{"Bid":null,"Ask":null}}}}'
+    http_version: 
+  recorded_at: Wed, 20 Nov 2013 09:44:30 GMT
+recorded_with: VCR 2.7.0

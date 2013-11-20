@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       Accept:
-      - ! '*/*'
+      - '*/*'
       User-Agent:
       - Ruby
   response:
@@ -19,7 +19,7 @@ http_interactions:
       X-Yql-Host:
       - engine4.yql.bf1.yahoo.com
       Access-Control-Allow-Origin:
-      - ! '*'
+      - '*'
       Cache-Control:
       - no-cache
       Content-Type:
@@ -38,7 +38,50 @@ http_interactions:
       - keep-alive
     body:
       encoding: US-ASCII
-      string: ! '{"query":{"count":1,"created":"2012-07-23T16:05:19Z","lang":"en-US","results":{"quote":{"symbol":"BP.L","Bid":"430.50","Ask":"430.75"}}}}'
+      string: '{"query":{"count":1,"created":"2012-07-23T16:05:19Z","lang":"en-US","results":{"quote":{"symbol":"BP.L","Bid":"430.50","Ask":"430.75"}}}}'
     http_version: 
   recorded_at: Mon, 23 Jul 2012 16:05:18 GMT
-recorded_with: VCR 2.2.4
+- request:
+    method: get
+    uri: http://query.yahooapis.com/v1/public/yql?env=store://datatables.org/alltableswithkeys&format=json&q=select%20quoted_at,%20symbol,%20Ask,%20Bid%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22BP.L%22)
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - '*/*'
+      User-Agent:
+      - Ruby
+      Host:
+      - query.yahooapis.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Yql-Host:
+      - engine10.yql.bf1.yahoo.com
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Wed, 20 Nov 2013 09:43:04 GMT
+      Server:
+      - YTS/1.20.13
+      Age:
+      - '1'
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: '{"query":{"count":1,"created":"2013-11-20T09:43:05Z","lang":"en-US","results":{"quote":{"symbol":"BP.L","Bid":"486.85","Ask":"487.00"}}}}'
+    http_version: 
+  recorded_at: Wed, 20 Nov 2013 09:43:06 GMT
+recorded_with: VCR 2.7.0

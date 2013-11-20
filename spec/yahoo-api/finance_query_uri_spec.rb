@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Yahoo::Api::Finance::QueryURI do 
-  shared_examples "valid finance URI" do |valid_ticker_string|
+  shared_examples "valid finance URI" do |valid_ticker_string, valid_fields_string|
     it "returns a URI object for the Yahoo Finance Query" do
       subject.should be_instance_of URI::HTTP 
     end
@@ -13,31 +13,36 @@ describe Yahoo::Api::Finance::QueryURI do
     end
 
     it "should parse the correct URL string" do
-      expected = "http://query.yahooapis.com/v1/public/yql?q=select%20symbol,%20Ask,%20Bid%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(#{valid_ticker_string})&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
+      expected = "http://query.yahooapis.com/v1/public/yql?q=select#{valid_fields_string}from%20yahoo.finance.quotes%20where%20symbol%20in%20(#{valid_ticker_string})&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys"
       subject.to_s.should == expected
     end        
   end
 
   context "with a single ticker provided" do
-    subject { Yahoo::Api::Finance::QueryURI.build(["BP.L"]) }   
-    include_examples "valid finance URI", '%22BP.L%22'
+    subject { Yahoo::Api::Finance::QueryURI.build(["BP.L"], ['symbol', 'Ask', 'Bid']) }   
+    include_examples "valid finance URI", '%22BP.L%22', '%20symbol,%20Ask,%20Bid%20'
   end  
 
   context "with three tickers provided" do
-    subject { Yahoo::Api::Finance::QueryURI.build(["BP.L","BLT.L","GSK.L"]) }
+    subject { Yahoo::Api::Finance::QueryURI.build(["BP.L","BLT.L","GSK.L"], ['symbol', 'Ask', 'Bid']) }
     include_examples "valid finance URI", 
-      '%22BP.L%22,%20%22BLT.L%22,%20%22GSK.L%22'
-  end                                 
+      '%22BP.L%22,%20%22BLT.L%22,%20%22GSK.L%22', '%20symbol,%20Ask,%20Bid%20'
+  end    
+  context "with no fields provided" do
+    subject { Yahoo::Api::Finance::QueryURI.build(["BP.L","BLT.L","GSK.L"], []) }
+    include_examples "valid finance URI", 
+      '%22BP.L%22,%20%22BLT.L%22,%20%22GSK.L%22', '%20*%20'
+  end                               
   
   context "with invalid tickers provided" do
     it "raises an exception with no ticker array" do
       expect {Yahoo::Api::Finance::QueryURI.build()}.
-        to raise_error(ArgumentError, "wrong number of arguments (0 for 1)")
+        to raise_error(ArgumentError, "wrong number of arguments (0 for 2)")
     end
     
     shared_examples "invalid ticker data type" do |data_type|
       it "raises an exception when a #{data_type.class} is provided" do
-        expect {Yahoo::Api::Finance::QueryURI.build(data_type)}.
+        expect {Yahoo::Api::Finance::QueryURI.build(data_type,[])}.
           to raise_error(ArgumentError, "Tickers must be supplied in an Array")
       end      
     end          
@@ -48,13 +53,15 @@ describe Yahoo::Api::Finance::QueryURI do
     include_examples "invalid ticker data type", {ticker:"BP.L"}    
 
     it "raises an exception with an empty ticker array" do
-      expect {Yahoo::Api::Finance::QueryURI.build([])}. 
+      expect {Yahoo::Api::Finance::QueryURI.build([],[])}. 
         to raise_error(ArgumentError, "At least one ticker must be supplied")
     end
     
     it "raises an exception with an array of blank tickers" do
-      expect {Yahoo::Api::Finance::QueryURI.build(["",""])}. 
+      expect {Yahoo::Api::Finance::QueryURI.build(["",""],[])}. 
         to raise_error(ArgumentError, "At least one ticker must be supplied")
     end
+  end
+  describe "choice of different fields for a select query" do
   end
 end

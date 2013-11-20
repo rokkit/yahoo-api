@@ -6,7 +6,7 @@ describe Yahoo::Api::Finance::Query do
   
   shared_examples "successful queries" do |tickers|
     
-    subject { Yahoo::Api::Finance::Query.new(tickers) }
+    subject { Yahoo::Api::Finance::Query.new(tickers, requested_data) }
     
     its(:response) { should be_kind_of Net::HTTPSuccess }
     its(:count) { should == tickers.size }
@@ -58,23 +58,23 @@ describe Yahoo::Api::Finance::Query do
   context "of a query with no defined assets" do
     it "raises an exception with argument" do
       expect {Yahoo::Api::Finance::Query.new()}.
-        to raise_error(ArgumentError, "wrong number of arguments (0 for 1)")
+        to raise_error(ArgumentError, "wrong number of arguments (0 for 2)")
     end
 
     it "raises an exception with an asset outside an array" do
-      expect {Yahoo::Api::Finance::Query.new("BP.L")}.
+      expect {Yahoo::Api::Finance::Query.new("BP.L", [])}.
         to raise_error(ArgumentError, "Tickers must be supplied in an Array")
     end
 
     it "raises an exception with an empty ticker array" do
-      expect {Yahoo::Api::Finance::Query.new([])}. 
+      expect {Yahoo::Api::Finance::Query.new([], [])}. 
         to raise_error(ArgumentError, "At least one ticker must be supplied")
     end
   end
 
   context "of a query with erroneous tickers" do
     use_vcr_cassette "error_stock_query", :record => :new_episodes
-    subject { Yahoo::Api::Finance::Query.new(["BP"]) }
+    subject { Yahoo::Api::Finance::Query.new(["BP"], ['Ask', 'Bid']) }
     
     it "returns a set of quotes" do
       subject.count.should == 1

@@ -7,9 +7,9 @@ module Yahoo
 
       class Query                       
         attr_reader :response
-        def initialize(tickers)
+        def initialize(tickers, fields)
           @tickers = tickers                                   
-          @response = Net::HTTP.get_response(QueryURI.build(tickers))
+          @response = Net::HTTP.get_response(QueryURI.build(tickers, fields))
         end  
 
         def count
